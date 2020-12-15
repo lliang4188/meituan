@@ -1,15 +1,15 @@
 <template>
     <div>
         <van-list
-            v-mode="loading"
+            v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
             @load="getData"
         >
         <ul class="list-container">
-            <li class="shop-list" v-for="item in list" :key="item.id">
+            <li class="shop-list" v-for="item in list" :key="item.id" @click="goDetail(item.id)">
                 <div class="img-box">
-                    <img :src="item.img" alt="item.name">
+                    <img :src="item.img" :alt="item.name">
                 </div>
                 <div class="info-box">
                     <h4 class="title">{{item.name}}</h4>
@@ -48,7 +48,7 @@
         current:0,
         size: 10,
         list: [],
-        loading: true,
+        loading: false,
         finished: false,
         total: 0
       }
@@ -62,7 +62,8 @@
           current: this.current,
           size: this.size
         }).then(res => {
-          // this.list= res.list
+
+          // this.list= res.data.list
           this.list = this.list.concat(res.data.list)
           this.loading = false
           this.current++
@@ -72,11 +73,14 @@
           }
         })
       },
+      goDetail(id){
+          this.$router.push({path:'/detail', query:{id}})
+      }
 
-    },
-    created() {
-      this.getData();
     }
+    // created() {
+    //   this.getData();
+    // }
   }
 </script>
 
