@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import Home from '../views/Home.vue'
-import Home from '../views/Home/index'
+import Home from '../views/home/index'
 // import Main from "../views/Mine"
 // import Test1 from "../views/Test1";
 // import Error from "../views/Error";
