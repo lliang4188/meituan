@@ -1,8 +1,8 @@
 <template>
     <div class="add-cart">
-        <span class="iconfont icon-jian1" v-if="product.count" @touchstart="start($event)" @touchend.stop.prevent="reduceStop($event)"></span>
+        <span class="iconfont icon-jian1" v-if="product.count" @click="reduceCart"></span>
         <span class="num"  v-if="product.count">{{ product.count }}</span>
-        <span class="iconfont icon-jiahao" @touchstart="start($event)" @touchend.stop.prevent="addStop($event)" ></span>
+        <span class="iconfont icon-jiahao" @click="addCart($event)" ></span>
     </div>
 </template>
 
@@ -15,27 +15,12 @@
       }
     },
     methods:{
-      addCart(){
-        this.$store.commit('product/addCart',{type:this.type, index:this.index})
+      addCart(e){
+        this.$store.commit('product/addCart',{type:this.type, index:this.index});
+        this.$store.commit('ball/show',e.target)
       },
       reduceCart(){
-        this.$store.commit('product/reduceCart',{type:this.type, index:this.index})
-      },
-      start ($event) {
-        this.startY = $event.touches[0].pageY
-      },
-
-      addStop ($event) {
-        const moving = Math.abs($event.changedTouches[0].pageY - this.startY)
-        if (moving > 20) return
-        this.startY = 0
-        this.addCart()
-      },
-      reduceStop ($event) {
-        const moving = Math.abs($event.changedTouches[0].pageY - this.startY)
-        if (moving > 20) return
-        this.startY = 0
-        this.reduceCart()
+        this.$store.commit('product/reduceCart',{type:this.type, index:this.index});
       }
     }
   }

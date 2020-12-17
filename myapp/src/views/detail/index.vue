@@ -44,8 +44,7 @@
     mounted() {
       setTimeout(()=>{
         this.scrollBox = new BScroll('.scrollBox',{
-          bounce:false,
-          click:true
+          bounce:false
         },20)
       })
 
