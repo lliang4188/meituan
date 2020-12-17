@@ -1,18 +1,22 @@
 <template>
     <div>
         <div class="order-box">
-            <div class="menu-box">
+            <div class="menu-box" ref="menuBox">
                 <ul>
-                    <li class="menu-list" v-for="(item,index) in productList" :key="index">{{item.name}}</li>
+                    <li class="menu-list"
+                        :class="{'active': currentIndex == index}"
+                        v-for="(item,index) in productList"
+                        :key="index"
+                        @click="changeMenu(index)">{{item.name}}</li>
 
                 </ul>
             </div>
-            <div class="prod-box">
+            <div class="prod-box" ref="proBox">
                 <ul>
-                    <li class="cate-list" v-for="(item,index) in productList" :key="index">
+                    <li class="cate-list" v-for="(item,typeIndex) in productList" :key="typeIndex">
                         <div class="cate-title">{{ item.name }}</div>
                         <ul>
-                            <li class="prod-list"  v-for="prod in item.content" :key="prod.id">
+                            <li class="prod-list"  v-for="(prod, index) in item.content" :key="prod.id">
                                 <div class="prod-img-box">
                                     <img :src="prod.img" :alt="prod.name">
                                 </div>
@@ -20,6 +24,9 @@
                                     <h4 class="name">{{ prod.name }}</h4>
                                     <div class="sale"><span class="num">销量{{prod.num}}</span><span>赞{{prod.up}}</span></div>
                                     <div class="price">&yen;{{prod.price}}</div>
+                                </div>
+                                <div class="add-cart-container">
+                                    <add-cart :type="typeIndex" :index="index"></add-cart>
                                 </div>
                             </li>
                         </ul>
@@ -33,11 +40,19 @@
 <script>
   import {mapState} from 'vuex'
   import BScroll from 'better-scroll'
+  import addCart from '../../components/add-cart'
   export default {
+    components:{
+      addCart
+    },
     data(){
       return{
         menuScroll: null,
-        prodScroll: null
+        prodScroll: null,
+        currentIndex: 0,
+        posY: [],
+        menuList: [],
+        scrollY: 0
       }
     },
     methods:{
@@ -48,8 +63,36 @@
         });
         this.prodScroll = new BScroll('.prod-box',{
           bounce:false,
+          probeType: 3,
           click: true
         });
+        // 获取右侧每个分类的垂直方方向的位置
+        this.getPosY();
+        // 获取左侧列表
+        this.menuList = this.$refs.menuBox.getElementsByClassName('menu-box');
+
+        this.prodScroll.on('scroll', e => {
+          this.scrollY = Math.abs(Math.round(e.y));
+        })
+      },
+      changeMenu(index){
+           let prodList = this.$refs.proBox.getElementsByClassName('cate-list');
+           let el = prodList[index];
+           this.prodScroll.scrollToElement(el, 300)
+        this.currentIndex = index
+      },
+      getPosY(){
+        let prodList = this.$refs.proBox.getElementsByClassName('cate-list');
+        let y = 0;
+        for (let  i=0; i<prodList.length; i++) {
+          if(i==0){
+            this.posY.push(y);
+          } else {
+            let prevEle = prodList[i-1];
+            y += prevEle.offsetHeight;
+            this.posY.push(y);
+          }
+        }
       }
     },
     computed:{
@@ -59,9 +102,26 @@
       this.$store.dispatch('product/getProdList',this.$route.query.id).then(() =>{
         // 初始化 betterScrollr
         this.$nextTick(()=>{
-                 this.initScroll()
+          this.initScroll()
         })
       })
+    },
+    watch:{
+      scrollY(val){
+
+        for(let i=0; i< this.posY.length; i++){
+          // console.log(val);
+          let pos1 = this.posY[i];
+          let pos2 = this.posY[i+1];
+          if(pos1 <= val && pos2 > val) {
+            let el = this.menuList;
+            this.menuScroll.scrollToElement(el, 300, 0, -100);
+            this.currentIndex = i;
+            break;
+          }
+
+        }
+      }
     }
   }
 </script>
@@ -104,6 +164,7 @@
                 .prod-list{
                     display: flex;
                     margin-bottom: 0.4rem;
+                    position: relative;
                     .prod-img-box{
                         width: 1.5rem;
                         flex:0 0 1.5rem;
@@ -137,6 +198,11 @@
                             font-size: 0.36rem;
                             color:#fb4e44;
                         }
+                    }
+                    .add-cart-container{
+                        position: absolute;
+                        right:0;
+                        bottom: 0;
                     }
                 }
             }

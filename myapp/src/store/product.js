@@ -1,18 +1,57 @@
 import { getProdById } from "../../api/detail";
-
+import Vue from  'vue';
 const product = {
   namespaced: true,
   state: {
     productList:[]
   },
+  getters: {
+    selectList(state){
+      let result = [];
+      state.productList.forEach(obj => {
+        obj.content.forEach(prod => {
+          if(prod.count){
+            result.push(prod)
+          }
+        })
+      })
+      return result;
+    },
+    // 计算总价
+    totalPrice(state, getter) {
+      return getter.selectList.reduce((price,prod)=>{
+        return price + prod.count*prod.price;
+      },0)
+    },
+    // 总数
+    total(total, getter) {
+      return getter.selectList.reduce((total,prod)=>{
+        return total + prod.count*prod.price;
+      },0)
+    }
+
+  },
   mutations: {
     saveProdList(state,arr){
       state.productList = [...arr]
+    },
+    addCart(state,{type,index}) {
+      // 分类 索引 s
+      let prod = state.productList[type].content[index];
+      if(prod.count) {
+        Vue.set(prod,'count', prod.count+1)
+      } else {
+        Vue.set(prod,'count', 1)
+      }
+    },
+    reduceCart(state,{type,index}) {
+      let prod = state.productList[type].content[index];
+      if(prod.count) {
+        Vue.set(prod,'count', prod.count-1)
+      }
     }
   },
-  getters: {
 
-  },
   actions: {
     // 请求商品列表
     getProdList({commit},id) {

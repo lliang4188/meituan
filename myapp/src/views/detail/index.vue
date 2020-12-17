@@ -10,6 +10,7 @@
         <van-tab title="商家">内容 3</van-tab>
       </van-tabs>
     </div>
+    <cart :seller="seller"></cart>
   </div>
 </template>
 
@@ -17,6 +18,7 @@
   import {getStoreById} from '../../../api/detail'
   import sellerHeader from './seller-header'
   import order from './order'
+  import cart from "./cart";
   import BScroll from 'better-scroll'
   export default {
     data(){
@@ -28,7 +30,8 @@
     },
     components:{
       sellerHeader,
-      order
+      order,
+      cart
     },
     methods:{
       getStoreMsg(){
@@ -55,7 +58,9 @@
 </script>
 
 <style lang="scss" scoped>
+
   .scrollBox{
     height: 100vh;
+    overflow: hidden;
   }
 </style>
