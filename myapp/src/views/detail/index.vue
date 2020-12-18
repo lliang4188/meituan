@@ -6,7 +6,9 @@
         <van-tab title="菜单">
           <order></order>
         </van-tab>
-        <van-tab title="评价">内容 2</van-tab>
+        <van-tab title="评价">
+          <comment></comment>
+        </van-tab>
         <van-tab title="商家">内容 3</van-tab>
       </van-tabs>
     </div>
@@ -19,6 +21,7 @@
   import sellerHeader from './seller-header'
   import order from './order'
   import cart from "./cart";
+  import comment from '../comment/index'
   import BScroll from 'better-scroll'
   export default {
     data(){
@@ -31,7 +34,8 @@
     components:{
       sellerHeader,
       order,
-      cart
+      cart,
+      comment
     },
     methods:{
       getStoreMsg(){
@@ -44,7 +48,8 @@
     mounted() {
       setTimeout(()=>{
         this.scrollBox = new BScroll('.scrollBox',{
-          bounce:false
+          bounce:false,
+          click: true
         },20)
       })
 

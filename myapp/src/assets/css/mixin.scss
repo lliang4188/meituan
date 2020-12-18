@@ -1,0 +1,30 @@
+@mixin border-fix($color:#000, $raduis:0){
+  position: relative;
+  &::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top:0;
+    border: 1px solid $color;
+    width: 200%;
+    height: 200%;
+    transform: scale(0.5);
+    transform-origin: 0 0;
+    border-radius: $raduis;
+    box-sizing: border-box;
+  }
+}
+
+@mixin border-top-1px($color){
+  position: relative;
+  &:after{
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
+    border-top:1px solid $color;
+    transform: translateY(0.5);
+  }
+}

@@ -58,13 +58,11 @@
     methods:{
       initScroll(){
         this.menuScroll = new BScroll('.menu-box',{
-          bounce: false,
-          click: true
+          bounce: false
         });
         this.prodScroll = new BScroll('.prod-box',{
           bounce:false,
-          probeType: 3,
-          click: true
+          probeType: 3
         });
         // 获取右侧每个分类的垂直方方向的位置
         this.getPosY();

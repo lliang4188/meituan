@@ -26,7 +26,7 @@ const product = {
     // 总数
     total(total, getter) {
       return getter.selectList.reduce((total,prod)=>{
-        return total + prod.count*prod.price;
+        return total + prod.count;
       },0)
     }
 
@@ -49,6 +49,15 @@ const product = {
       if(prod.count) {
         Vue.set(prod,'count', prod.count-1)
       }
+    },
+    clearList(state) {
+      state.productList.forEach(item => {
+        item.content.forEach(prod =>{
+          if(prod.count) {
+            prod.count = 0;
+          }
+        })
+      })
     }
   },
 
@@ -57,7 +66,15 @@ const product = {
     getProdList({commit},id) {
       return new Promise(resolve => {
         getProdById({id}).then(res =>{
-          commit('saveProdList',res.data.goods)
+          // console.log(res)
+          let list = res.data.goods;
+          list.forEach((item, type) =>{
+            item.content.forEach((prod, index)=>{
+              prod.type = type;
+              prod.index = index
+            })
+          })
+          commit('saveProdList',list)
           resolve()
         })
       })

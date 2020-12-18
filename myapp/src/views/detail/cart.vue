@@ -1,33 +1,60 @@
 <template>
-  <div class="cart-container">
-    <div class="cart-box">
-      <div class="cart-icon" :class="{'active':total}">
-        <span class="iconfont icon-gouwuche11"></span>
-        <span class="num" v-if="total">{{ total }}</span>
+  <div>
+    <div class="cart-container">
+      <div class="cart-box" @click="isShow= !isShow">
+        <div class="cart-icon" :class="{'active':total}">
+          <span class="iconfont icon-gouwuche11"></span>
+          <span class="num" v-if="total">{{ total }}</span>
+        </div>
+        <div class="cart-price" :class="{'active':total}">
+          <div class="price">&yen;{{ totalPrice }}</div>
+          <div class="deliver">另需配送费&yen;{{ seller.fee }}</div>
+        </div>
+        <div class="cart-buy" :class="{'active':totalPrice > seller.price}">{{ buyDesc }}</div>
       </div>
-      <div class="cart-price" :class="{'active':total}">
-        <div class="price">&yen;{{ totalPrice }}</div>
-        <div class="deliver">另需配送费&yen;{{ seller.fee }}</div>
+      <div class="ball-box">
+        <div v-for="(ball,index) in ballList" :key="index">
+          <transition @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+            <div class="ball" v-show="ball.show">
+              <div class="inner"></div>
+            </div>
+          </transition>
+        </div>
       </div>
-      <div class="cart-buy" :class="{'active':totalPrice > seller.price}">{{ buyDesc }}</div>
-    </div>
-    <div class="ball-box">
-      <div v-for="(ball,index) in ballList" :key="index">
-        <transition @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
-          <div class="ball" v-show="ball.show">
-            <div class="inner"></div>
+      <transition name="fade">
+        <div class="cart-list-box" v-if="isShow && total">
+          <div class="title">
+            <span @click="clearCart()">清空购物车</span>
           </div>
-        </transition>
-      </div>
+          <ul class="list-box">
+            <li class="list" v-for="prod in selectList" :key="prod.id">
+              <span class="name">{{ prod.name }}</span>
+              <span class="price">&yen;{{ prod.price }}</span>
+              <add-cart :type="prod.type" :index="prod.index"></add-cart>
+            </li>
+          </ul>
+        </div>
+      </transition>
+    </div>
+    <div class="mask" v-if="isShow && total" @click="isShow= !isShow">
     </div>
   </div>
+
 </template>
 <script>
   import {mapGetters, mapState} from 'vuex'
-
+  import addCart from '../../components/add-cart'
   export default {
+    data(){
+      return {
+        isShow: false
+      }
+    },
+    components:{
+      addCart
+    },
     computed: {
-      ...mapGetters('product', ['totalPrice', 'total']),
+      ...mapGetters('product', ['totalPrice', 'total', 'selectList']),
       ...mapState('ball', ['ballList']),
       buyDesc() {
         if (this.totalPrice == 0) {
@@ -42,6 +69,7 @@
     },
     props: ['seller'],
     methods: {
+
         beforeEnter(el){
             for(let i=0; i< this.ballList.length; i++) {
                 let ball = this.ballList[i];
@@ -71,6 +99,9 @@
             el.style.display= 'none';
             // 释放
             this.$store.commit('ball/removeBall')
+        },
+        clearCart(){
+          this.$store.commit('product/clearList')
         }
 
     }
@@ -85,10 +116,11 @@
     height: 50px;
     width: 100%;
     background-color: #3b3b3c;
+    z-index: 99;
 
     .cart-box {
       display: flex;
-
+      background-color: #3b3b3c;
       .cart-icon {
         width: 50px;
         height: 50px;
@@ -131,6 +163,7 @@
       .cart-price {
         padding-left: 70px;
         flex: 1;
+        background-color: #3b3b3c;
         color: #999;
 
         .price {
@@ -188,5 +221,65 @@
         transition: all 0.4s linear;
       }
     }
+
+    .cart-list-box{
+      position: absolute;
+      left: 0;
+      bottom: 50px;
+      background-color: #fff;
+      z-index: -1;
+      width: 100%;
+      border-top:1px solid #e4e4e4;
+      .title{
+        height: 30px;
+        line-height: 30px;
+        padding: 0 10px;
+        text-align: right;
+        font-size: 12px;
+        background-color: #f4f4f4;
+        color: #2c3e50;
+      }
+      .list-box{
+        padding: 0 10px;
+      }
+      .list{
+        padding: 14px 0;
+        border-bottom: 1px solid #f4f4f4;
+        display: flex;
+        .name{
+          flex: 1;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .price{
+          color: #fb4e44;
+          padding: 0 25px;
+        }
+      }
+    }
+    .fade-enter{
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    .fade-enter-active{
+      transition: all 200ms ease;
+    }
+    .fade-enter-to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+  }
+  .mask{
+    position: fixed;
+    top:0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(7, 17, 27, 0.6);
+    backdrop-filter: blur(10px);
+    z-index: 50;
   }
 </style>
