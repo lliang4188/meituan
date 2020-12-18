@@ -1,17 +1,17 @@
 <template>
     <div class="list-box">
         <ul class="content">
-            <li class="list">
+            <li v-for="item in list" :key="item.id" class="list">
                 <div class="img-box">
-                    <img src="" alt="">
+                    <img :src="item.portrait" :alt="item.id">
                 </div>
                 <div class="info-box">
                     <div class="basic">
-                        <span class="name">name</span>
-                        <span class="date">2020-07-10</span>
+                        <span class="name">{{item.name}}</span>
+                        <span class="date">{{item.time}}</span>
                     </div>
-                    <div class="time">22分钟</div>
-                    <div class="desc">sdsdsdsdsd</div>
+                    <div class="time">{{item.duration}}分钟</div>
+                    <div class="desc">{{item.content}}</div>
                 </div>
             </li>
         </ul>
@@ -20,6 +20,7 @@
 
 <script>
   export default {
+      props:['list']
   }
 </script>
 
@@ -53,6 +54,11 @@
                             color: #898989;
                             font-size: 0.24rem;
                         }
+                    }
+                    .time{
+                        font-size: 0.24rem;
+                        line-height: 0.36rem;
+                        color: #999;
                     }
                     .desc{
                         line-height: 0.4rem;

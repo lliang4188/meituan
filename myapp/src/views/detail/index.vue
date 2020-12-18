@@ -12,7 +12,7 @@
         <van-tab title="商家">内容 3</van-tab>
       </van-tabs>
     </div>
-    <cart :seller="seller"></cart>
+    <cart :seller="seller" v-if="active == 0"></cart>
   </div>
 </template>
 

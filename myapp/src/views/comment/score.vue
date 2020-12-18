@@ -1,23 +1,23 @@
 <template>
     <div class="score-box">
         <div class="seller-score">
-            <p class="num">5.0</p>
+            <p class="num">{{ score }}</p>
             <p class="desc">商家评分</p>
         </div>
         <div class="pack-score">
             <div class="item">
                 <span>口味</span>
-                <star></star>
-                <span>4.9</span>
+                <star :score="flavor"></star>
+                <span>{{ flavor }}</span>
             </div>
             <div class="item">
                 <span>包装</span>
-                <star></star>
-                <span>4.9</span>
+                <star :score="packing"></star>
+                <span>{{packing}}</span>
             </div>
         </div>
         <div class="deliver-score">
-            <p class="num">5.0</p>
+            <p class="num">{{ delivery }}</p>
             <p class="desc">配送评分</p>
         </div>
     </div>
@@ -26,6 +26,7 @@
 <script>
     import star from '../../components/star'
   export default {
+      props:['delivery','score','flavor', 'packing'],
       components:{
         star
       }
