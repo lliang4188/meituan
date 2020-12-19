@@ -9,7 +9,9 @@
         <van-tab title="评价">
           <comment></comment>
         </van-tab>
-        <van-tab title="商家">内容 3</van-tab>
+        <van-tab title="商家">
+          <seller :seller="seller"></seller>
+        </van-tab>
       </van-tabs>
     </div>
     <cart :seller="seller" v-if="active == 0"></cart>
@@ -21,6 +23,7 @@
   import sellerHeader from './seller-header'
   import order from './order'
   import cart from "./cart";
+  import seller from '../seller/index'
   import comment from '../comment/index'
   import BScroll from 'better-scroll'
   export default {
@@ -35,7 +38,8 @@
       sellerHeader,
       order,
       cart,
-      comment
+      comment,
+      seller
     },
     methods:{
       getStoreMsg(){

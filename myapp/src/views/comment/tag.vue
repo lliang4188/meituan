@@ -1,12 +1,19 @@
 <template>
     <div class="tag-box">
-        <span class="tag-item" :class="{'active': currentType== obj.id}" v-for="obj in tag" :key="obj.id">{{obj.name}}（{{obj.count}}）</span>
+        <span class="tag-item" :class="{'active': currentType== obj.id}" v-for="obj in tag" :key="obj.id" @click="changeTab(obj.id)">{{obj.name}}（{{obj.count}}）</span>
     </div>
 </template>
 
 <script>
   export default {
-      props:['tag','currentType']
+    props:['tag','currentType'],
+    methods:{
+      changeTab(id){
+
+        this.$emit('change', id)
+      }
+    }
+
   }
 </script>
 
